@@ -1,0 +1,334 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #111;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+header {
+    padding: 15px;
+    background: #1b1b1b;
+    border-bottom: 1px solid #333;
+}
+
+button {
+    cursor: pointer;
+}
+
+.page {
+    padding: 15px;
+}
+
+.delete-card {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: #e53935;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.home-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.home-header h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.home-header .primary-btn {
+    position: absolute;
+    right: 0;
+}
+
+.top-bar h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.top-bar .primary-btn {
+    position: absolute;
+    right: 0;
+}
+
+.primary-btn {
+    background: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+.secondary-btn {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+.binders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.binder {
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+}
+
+.binder-content {
+    position: relative;
+    z-index: 2;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.binder-content p {
+    font-size: 1rem;
+    opacity: .9;
+}
+
+.binder-content h3 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+.binder-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+
+    display: flex;
+    gap: 6px;
+}
+
+.binder-trophy {
+    margin-top: 8px;
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 8px gold);
+}
+
+.binder-action {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-binder {
+    background: #ff9800;
+}
+
+.delete-binder {
+    background: #e53935;
+}
+
+.binder.complete {
+    border: 4px solid #FFD700;
+    box-shadow:
+        0 0 10px #FFD700,
+        0 0 20px #FFD700,
+        0 0 30px rgba(255, 215, 0, .7);
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.card {
+    background: #000;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 10px;
+    position: relative;
+}
+
+.card-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-image img {
+    width: 80%;
+    max-width: 255px;
+    height: auto;
+    border-radius: 8px;
+
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.card.ordering-card {
+    cursor: grab;
+}
+
+.card.ordering-card.dragging {
+    cursor: grabbing;
+}
+
+.card h3 {
+    margin-top: 8px;
+    font-size: 18px;
+}
+
+.card p {
+    color: #ddd;
+    margin-top: 3px;
+}
+
+.check {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #00c853;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.qty {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+.card-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.accept-btn {
+    background: #00c853;
+}
+
+.plus,
+.minus,
+.edit {
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+}
+
+.plus {
+    background: #00bcd4;
+    color: white;
+}
+
+.minus {
+    background: #e53935;
+    color: white;
+}
+
+.edit {
+    background: #ff9800;
+    color: white;
+}
+
+.floating {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    font-size: 30px;
+    background: #2ecc71;
+    color: white;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 8px;
+}
+
+dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    width: 350px;
+    background: #181818;
+    color: white;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, .8);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ordering {
+    border: 2px dashed #00c853;
+}
+
+.dragging {
+    opacity: .5;
+}

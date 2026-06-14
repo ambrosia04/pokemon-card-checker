@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Binder</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ef4444'/%3E%3Ctext x='16' y='17' fill='white' font-size='20' font-family='sans-serif' font-weight='bold' text-anchor='middle' dominant-baseline='central'%3EB%3C/text%3E%3C/svg%3E">
+
+</head>
+
+<body>
+
+    <div id="homePage" class="page">
+
+        <div class="home-header">
+            <h1>Binders</h1>
+            <button class="primary-btn" onclick="openBinderModal()">+ Binder</button>
+        </div>
+
+        <div id="binderList" class="binders-grid"></div>
+
+    </div>
+
+    <div id="binderPage" class="page hidden">
+
+        <div class="top-bar">
+            <div>
+                <button class="secondary-btn" onclick="goBack()">← Back</button>
+            </div>
+
+            <h2 id="binderTitle"></h2>
+
+            <div>
+                <button id="orderBtn" class="secondary-btn" onclick="toggleOrder()">
+                    Order
+                </button>
+            </div>
+        </div>
+
+        <div id="cardsGrid" class="cards-grid"></div>
+
+        <button class="floating" onclick="openCardModal()">+</button>
+
+    </div>
+
+    <dialog id="binderDialog">
+        <h2>Create Binder</h2>
+
+        <input id="binderName" placeholder="Binder Name" aria-label="Binder Name">
+
+        <input id="binderColor" type="color" aria-label="Binder Color">
+
+        <div class="modal-buttons">
+            <button class="primary-btn" onclick="createBinder()">Create</button>
+            <button onclick="binderDialog.close()">Cancel</button>
+        </div>
+    </dialog>
+
+    <dialog id="setDialog">
+        <h2>Create Set</h2>
+
+        <input id="setName" placeholder="Set Name" aria-label="Set Name">
+
+        <div class="modal-buttons">
+            <button class="primary-btn" onclick="createSet()">Create</button>
+            <button onclick="setDialog.close()">Cancel</button>
+        </div>
+    </dialog>
+
+    <dialog id="cardDialog">
+        <h2 id="cardDialogTitle">Add Card</h2>
+
+        <input id="cardImage" type="file" accept="image/*" alt="Card Image" aria-label="Card Image">
+
+        <input id="cardName" placeholder="Card Name" aria-label="Card Name">
+
+        <input id="cardSet" placeholder="Set Name" aria-label="Set Name">
+
+        <input id="cardNumber" placeholder="Set Number" aria-label="Set Number">
+
+        <div class="modal-buttons">
+            <button class="primary-btn" onclick="saveCard()">Save</button>
+            <button onclick="cardDialog.close()">Cancel</button>
+        </div>
+    </dialog>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
