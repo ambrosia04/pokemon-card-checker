@@ -161,18 +161,14 @@ function deleteCard(index) {
 
 function openBinder(index) {
     currentBinder = index;
+    localStorage.setItem("lastBinder", index);
 
     document.getElementById("homePage").classList.add("hidden");
     document.getElementById("binderPage").classList.remove("hidden");
     document.getElementById("binderTitle").innerText = binders[index].name;
 
-    // Safety initialization: Ensures old binders do not crash on render
-    if (!binders[index].sets) {
-        binders[index].sets = [];
-    }
-    if (!binders[index].cards) {
-        binders[index].cards = [];
-    }
+    if (!binders[index].sets) binders[index].sets = [];
+    if (!binders[index].cards) binders[index].cards = [];
 
     refreshSetDropdown();
     renderCards();
@@ -219,7 +215,7 @@ function refreshSetDropdown() {
 function openCardModal(cardIndex = null) {
     editingCard = cardIndex;
     document.getElementById("cardDialogTitle").innerText = cardIndex === null ? "Add Card" : "Edit Card";
-    document.getElementById("cardImage").value = ""; 
+    document.getElementById("cardImage").value = "";
 
     if (cardIndex !== null) {
         const card = binders[currentBinder].cards[cardIndex];
@@ -372,3 +368,8 @@ function addDragEvents(el) {
 }
 
 renderBinders();
+
+const last = localStorage.getItem("lastBinder");
+if (last !== null && binders[last]) {
+    openBinder(Number(last));
+}
