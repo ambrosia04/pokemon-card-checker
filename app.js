@@ -4,7 +4,7 @@ let currentBinder = null;
 let editingCard = null;
 let orderMode = false;
 
-// Attempt to save data and catch storage errors if they occur
+// Safe save to handle browser storage limits gracefully
 function saveData() {
     try {
         localStorage.setItem("binders", JSON.stringify(binders));
@@ -17,7 +17,7 @@ function saveData() {
     }
 }
 
-// Automatically resizes and compresses image to save local storage space
+// Compresses raw file uploads to save storage space
 function compressImage(file, callback) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -26,7 +26,6 @@ function compressImage(file, callback) {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
 
-            // Scale image down to maximum width of 300px while keeping aspect ratio
             const MAX_WIDTH = 300;
             let width = img.width;
             let height = img.height;
@@ -40,7 +39,6 @@ function compressImage(file, callback) {
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Compress to JPEG format with 60% quality (reduces size drastically)
             const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
             callback(compressedBase64);
         };
@@ -63,8 +61,10 @@ function renderBinders() {
     list.innerHTML = "";
 
     binders.forEach((binder, index) => {
-        const owned = binder.cards.filter(c => c.qty > 0).length;
-        const total = binder.cards.length;
+        // Ensure properties exist on old binders
+        const cardsList = binder.cards || [];
+        const owned = cardsList.filter(c => c.qty > 0).length;
+        const total = cardsList.length;
 
         const div = document.createElement("div");
         const complete = total > 0 && owned === total;
@@ -115,7 +115,7 @@ function finishCreateBinder(name, color) {
             name,
             color,
             cards: [],
-            sets: [] // Ensure sets is initialized
+            sets: []
         });
     }
 
@@ -161,13 +161,17 @@ function deleteCard(index) {
 
 function openBinder(index) {
     currentBinder = index;
+
     document.getElementById("homePage").classList.add("hidden");
     document.getElementById("binderPage").classList.remove("hidden");
     document.getElementById("binderTitle").innerText = binders[index].name;
 
-    // Ensure sets list is initialized for old data
+    // Safety initialization: Ensures old binders do not crash on render
     if (!binders[index].sets) {
         binders[index].sets = [];
+    }
+    if (!binders[index].cards) {
+        binders[index].cards = [];
     }
 
     refreshSetDropdown();
@@ -181,8 +185,13 @@ function goBack() {
 }
 
 function createSet() {
-    const name = document.getElementById("setName").value;
+    const name = document.getElementById("setName").value.trim();
     if (!name) return;
+
+    // Ensure sets array is ready
+    if (!binders[currentBinder].sets) {
+        binders[currentBinder].sets = [];
+    }
 
     binders[currentBinder].sets.push(name);
     saveData();
@@ -193,9 +202,13 @@ function createSet() {
 
 function refreshSetDropdown() {
     const select = document.getElementById("cardSet");
+    if (!select) return;
+
     select.innerHTML = "";
-    
-    binders[currentBinder].sets.forEach(set => {
+
+    // Safely reads sets list with an empty array fallback
+    const setsList = binders[currentBinder].sets || [];
+    setsList.forEach(set => {
         const option = document.createElement("option");
         option.value = set;
         option.textContent = set;
@@ -206,7 +219,7 @@ function refreshSetDropdown() {
 function openCardModal(cardIndex = null) {
     editingCard = cardIndex;
     document.getElementById("cardDialogTitle").innerText = cardIndex === null ? "Add Card" : "Edit Card";
-    document.getElementById("cardImage").value = ""; // Reset file picker
+    document.getElementById("cardImage").value = ""; 
 
     if (cardIndex !== null) {
         const card = binders[currentBinder].cards[cardIndex];
@@ -223,14 +236,13 @@ function openCardModal(cardIndex = null) {
 
 function saveCard() {
     const file = document.getElementById("cardImage").files[0];
-    const name = document.getElementById("cardName").value;
+    const name = document.getElementById("cardName").value.trim();
     const set = document.getElementById("cardSet").value;
-    const number = document.getElementById("cardNumber").value;
+    const number = document.getElementById("cardNumber").value.trim();
 
     if (!name) return;
 
     if (file) {
-        // Automatically compress before finishing the save operation
         compressImage(file, function (compressedBase64) {
             finishSave(compressedBase64, name, set, number);
         });
@@ -267,17 +279,23 @@ function renderCards() {
     const grid = document.getElementById("cardsGrid");
     grid.innerHTML = "";
 
-    binders[currentBinder].cards.forEach((card, index) => {
+    // Safely retrieve the cards list
+    const cardsList = binders[currentBinder].cards || [];
+
+    cardsList.forEach((card, index) => {
         const div = document.createElement("div");
         div.className = orderMode ? "card ordering-card" : "card";
         div.draggable = orderMode;
         div.dataset.index = index;
 
+        // Uses a robust third-party image fallback to prevent nested single quote errors
+        const finalImage = card.image || "https://via.placeholder.com/150x200?text=No+Image";
+
         div.innerHTML = `
             ${!orderMode ? `<button class="delete-card" onclick="deleteCard(${index})">×</button>` : ''}
             ${card.qty > 0 ? '<div class="check">✓</div>' : ''}
             <div class="card-image">
-                <img src="${card.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 150 200\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'%23222\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' fill=\'%23555\' dominant-baseline=\'middle\' text-anchor=\'middle\'%3ENo Image%3C/text%3E%3C/svg%3E'}" alt="${card.name}">
+                <img src="${finalImage}" alt="${card.name}">
             </div>
             <h3>${card.name}</h3>
             <p>${card.set}</p>
