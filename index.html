@@ -78,7 +78,11 @@
 
         <input id="cardName" placeholder="Card Name" aria-label="Card Name">
 
-        <input id="cardSet" placeholder="Set Name" aria-label="Set Name">
+        <!-- Fixed Layout: Changed cardSet to a select tag and added a button to create sets -->
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; margin-top: 8px;">
+            <select id="cardSet" aria-label="Set Name" style="margin: 0; flex-grow: 1;"></select>
+            <button type="button" class="primary-btn" onclick="setDialog.showModal()" style="margin: 0; padding: 10px 15px; font-size: 14px;">+ Set</button>
+        </div>
 
         <input id="cardNumber" placeholder="Set Number" aria-label="Set Number">
 
